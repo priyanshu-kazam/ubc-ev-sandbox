@@ -25,7 +25,7 @@ plugins:
   otelsetup:
     id: otelsetup
     config:
-      serviceName: "kazam-ubc-otel"
+      serviceName: "hpcl-ubc-otel"
       serviceVersion: "1.0.0"
       environment: "production"
       domain: "UBC"
@@ -48,7 +48,7 @@ modules:
     handler:
       type: std
       role: bpp
-      subscriberId: ubc.kazam.energy
+      subscriberId: hpcl.ubc.kazam.energy
       httpClientConfig:
         maxIdleConns: 1000
         maxIdleConnsPerHost: 200
@@ -82,8 +82,8 @@ modules:
         keyManager:
           id: simplekeymanager
           config:
-            networkParticipant: ubc.kazam.energy
-            keyId: 76EU7bPss2QKJqvjmSBL5KMSb4eQq1RyJDdvLXpYkxGUgo3nAHM3cx
+            networkParticipant: hpcl.ubc.kazam.energy
+            keyId: 76EU7RPHz1SxcVFzUqV3jvbAxwyGbP6aKnbfk5NTwNi3jyweAyHiGf
             signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
             signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
             encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
@@ -128,8 +128,7 @@ modules:
     handler:
       type: std
       role: bpp
-      subscriberId: ubc.kazam.energy
-      subscriberId: ubc.kazam.energy
+      subscriberId: hpcl.ubc.kazam.energy
       httpClientConfig:
         maxIdleConns: 1000
         maxIdleConnsPerHost: 200
@@ -171,8 +170,8 @@ modules:
         keyManager:
           id: simplekeymanager
           config:
-            networkParticipant: ubc.kazam.energy
-            keyId: 76EU7bPss2QKJqvjmSBL5KMSb4eQq1RyJDdvLXpYkxGUgo3nAHM3cx
+            networkParticipant: hpcl.ubc.kazam.energy
+            keyId: 76EU7RPHz1SxcVFzUqV3jvbAxwyGbP6aKnbfk5NTwNi3jyweAyHiGf
             signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
             signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
             encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=

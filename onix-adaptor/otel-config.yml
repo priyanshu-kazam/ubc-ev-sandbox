@@ -71,10 +71,16 @@ exporters:
     compression: gzip
 
 extensions:
-  oauth2client:
+  oauth2client-kazam:
     token_url: https://obs-auth.prod.ubc.nbsl.org.in/oauth2/token
     client_id: otel-collector-kzm
     client_secret: E8A023AE-19DF-4765-99D8-3033D204DD6B
+    endpoint_params:
+      audience: otel-collector-network
+  oauth2client-hpcl:
+    token_url: https://obs-auth.prod.ubc.nbsl.org.in/oauth2/token
+    client_id: otel-collector-hcp
+    client_secret: 2AA053AE-5393-4784-9AD6-A9665EC7B092
     endpoint_params:
       audience: otel-collector-network
   health_check:
@@ -83,7 +89,7 @@ extensions:
     endpoint: 0.0.0.0:55679
 
 service:
-  extensions: [health_check, zpages, oauth2client]
+  extensions: [health_check, zpages, oauth2client-kazam, oauth2client-hpcl]
   pipelines:
     # App-level: ALL metrics -> Prometheus (stays local on the node)
     # metrics/app:
