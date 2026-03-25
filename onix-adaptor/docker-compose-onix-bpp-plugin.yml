@@ -77,7 +77,7 @@ services:
     image: manendrapalsingh/onix-adapter:v0.9.5
     container_name: onix-bpp-plugin-hpcl
     ports:
-      - "8002:8002"
+      - "8003:8003"
     volumes:
       # Mount config directory (writable for symlink creation, but original files won't be modified)
       - ${CONFIG_PATH:-./config}/onix-bpp-hpcl:/app/config
