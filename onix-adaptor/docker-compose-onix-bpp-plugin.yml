@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   redis-onix-bpp:
@@ -15,7 +15,7 @@ services:
       timeout: 3s
       retries: 5
     restart: unless-stopped
-  
+
   redis-onix-bpp-uat:
     image: redis:alpine
     container_name: redis-onix-bpp-uat
@@ -29,6 +29,22 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    restart: unless-stopped
+
+  # OTEL Collector for BPP - receives OTLP from onix-bpp-plugin
+  otel-collector-bpp:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector-bpp
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./otel-config.yml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4321:4317"
+      - "4322:4318"
+      - "13134:13133"
+      - "55680:55679"
+    networks:
+      - onix-network
     restart: unless-stopped
 
   onix-bpp-plugin:
@@ -56,22 +72,6 @@ services:
     networks:
       - onix-network
 
-  # OTEL Collector for BPP - receives OTLP from onix-bpp-plugin
-  otel-collector-bpp:
-    image: otel/opentelemetry-collector-contrib:latest
-    container_name: otel-collector-bpp
-    command: ["--config=/etc/otelcol/config.yaml"]
-    volumes:
-      - ./otel-config.yml:/etc/otelcol/config.yaml:ro
-    ports:
-      - "4321:4317"
-      - "4322:4318"
-      - "13134:13133"
-      - "55680:55679"
-    networks:
-      - onix-network
-    restart: unless-stopped
-
   onix-bpp-plugin-uat:
     # Use pre-built image from Docker Hub
     image: manendrapalsingh/onix-adapter:v0.9.3
@@ -98,4 +98,3 @@ services:
 networks:
   onix-network:
     driver: bridge
-
