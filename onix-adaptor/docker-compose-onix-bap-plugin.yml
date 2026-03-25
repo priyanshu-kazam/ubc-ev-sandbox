@@ -93,6 +93,28 @@ services:
     networks:
       - onix-network
 
+  onix-bap-plugin-uat:
+    # Use pre-built image from Docker Hub
+    image: manendrapalsingh/onix-adapter:v0.9.3
+    container_name: onix-bap-plugin-uat
+    ports:
+      - "9001:9001"
+    volumes:
+      # Mount config directory (writable for symlink creation, but original files won't be modified)
+      - ${CONFIG_PATH:-./config_UAT}/onix-bap:/app/config
+      # Mount schema directory (read-only)
+      - ../schemas:/app/schemas:ro
+    environment:
+      - CONFIG_FILE=/app/config/adapter.yaml
+      - REDIS_PASSWORD=your-redis-password
+    restart: unless-stopped
+    depends_on:
+      redis-onix-bap-uat:
+        condition: service_healthy
+    networks:
+      - onix-network
+
 networks:
   onix-network:
     driver: bridge
+

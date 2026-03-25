@@ -1,4 +1,4 @@
-appName: "bpp-ev-charging"
+appName: "onix-ev-charging"
 
 log:
   level: debug
@@ -10,8 +10,9 @@ log:
     - subscriber_id
     - module_id
     # - parent_id
+
 http:
-  port: 8002
+  port: 9001
   timeout:
     read: 30
     write: 30
@@ -20,35 +21,26 @@ http:
 pluginManager:
   root: /app/plugins
 
-# OpenTelemetry (OTLP) - metrics and traces sent to OTEL collector, then to Loki/backend
 plugins:
   otelsetup:
     id: otelsetup
     config:
-      serviceName: "kazam-ubc-otel"
+      serviceName: "beckn-onix"
       serviceVersion: "1.0.0"
-      environment: "production"
-      domain: "UBC"
-      otlpEndpoint: "otel-collector-bpp:4317"
       enableMetrics: "true"
-      networkMetricsGranularity: "2min"
-      networkMetricsFrequency: "4min"
-      enableTracing: "true"
-      enableLogs: "true"
-      timeInterval: "5"
-      auditFieldsConfig: "https://raw.githubusercontent.com/manendrapalsingh/ubc-ev-sandbox/refs/heads/feat/v0.9.5/audit-fields.yaml"
-      cacheTTL: "3600"
+      environment: "development"
+      metricsPort: "3003"
 
 modules:
-  # BPP Receiver - Receives requests via HTTP and routes to backend via HTTP API
-  # Phase 1: Receives discover from CDS (HTTP) -> routes to mock-bpp (HTTP)
-  # Phase 2+: Receives other requests (select, init, confirm, etc.) from BAP-ONIX (HTTP) -> routes to mock-bpp (HTTP)
-  - name: bppTxnReceiver
-    path: /bpp/receiver/
+  # BAP Receiver - Receives callbacks from CDS (Phase 1) and BPPs (Phase 2+)
+  # Phase 1: Receives on_search from CDS with aggregated catalog
+  # Phase 2+: Receives callbacks from BPPs (on_select, on_init, on_confirm, etc.)
+  - name: bapTxnReceiver
+    path: /bap/receiver/
     handler:
       type: std
-      role: bpp
-      subscriberId: ubc.kazam.energy
+      role: bap
+      subscriberId: bap.ubc.kazam.energy
       httpClientConfig:
         maxIdleConns: 1000
         maxIdleConnsPerHost: 200
@@ -63,27 +55,27 @@ modules:
         #     retry_wait_min: 100ms
         #     retry_wait_max: 500ms
         # this is for the dedi registry
-        # registry:
-        #   id: dediregistry
-        #   config:
-        #     url: http://api.testnet.beckn.one/dedi
-        #     registryName: subscribers.beckn.one
-        #     retry_max: 3
-        #     retry_wait_min: 100ms
-        #     retry_wait_max: 500ms
         registry:
           id: dediregistry
           config:
-            url: https://api.beckn.one/registry/dedi
+            url: http://api.testnet.beckn.one/dedi
             registryName: subscribers.beckn.one
             retry_max: 3
             retry_wait_min: 100ms
             retry_wait_max: 500ms
+        # registry:
+        #   id: dediregistry
+        #   config:
+        #     url: https://api.beckn.one/registry/dedi
+        #     registryName: subscribers.beckn.one
+        #     retry_max: 3
+        #     retry_wait_min: 100ms
+        #     retry_wait_max: 500ms
         keyManager:
           id: simplekeymanager
           config:
-            networkParticipant: ubc.kazam.energy
-            keyId: 76EU7bPss2QKJqvjmSBL5KMSb4eQq1RyJDdvLXpYkxGUgo3nAHM3cx
+            networkParticipant: bap.ubc.kazam.energy
+            keyId: 76EU7QxoJ7SabVuW2curNS4odKuv3981AiJhmpzMoqLhEeGfMDsiTM
             signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
             signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
             encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
@@ -91,7 +83,7 @@ modules:
         cache:
           id: cache
           config:
-            addr: redis-onix-bpp:6379
+            addr: redis-onix-bap-uat:6379
         schemaValidator:
           id: schemav2validator
           config:
@@ -99,7 +91,7 @@ modules:
             location: https://raw.githubusercontent.com/beckn/protocol-specifications-v2/refs/heads/core-v2.0.0-rc/api/beckn.yaml
             cacheTTL: "3600"
             extendedSchema_enabled: "true"
-            extendedSchema_cacheTTL: "3600"
+            extendedSchema_cacheTTL: "86400"
             extendedSchema_maxCacheSize: "100"
             extendedSchema_downloadTimeout: "30"
             extendedSchema_allowedDomains: "beckn.org,example.com,raw.githubusercontent.com"
@@ -108,28 +100,28 @@ modules:
         router:
           id: router
           config:
-            routingConfig: /app/config/bpp_receiver_routing.yaml
+            routingConfig: /app/config/bap_receiver_routing.yaml
         middleware:
           - id: reqpreprocessor
             config:
               # contextKeys: transaction_id,message_id,parent_id
               contextKeys: transaction_id,message_id
-              role: bpp
+              role: bap
       steps:
         - validateSign
         - addRoute
         - validateSchema
 
-  # BPP Caller - Receives responses from backend via HTTP and sends HTTP
-  # Phase 1: Receives on_discover from mock-bpp (HTTP) -> sends HTTP to mock-cds
-  # Phase 2+: Receives other responses (on_select, on_init, etc.) from mock-bpp (HTTP) -> sends HTTP to BAP-ONIX plugin
-  - name: bppTxnCaller
-    path: /bpp/caller/
+  # BAP Caller - Entry point for all requests from BAP
+  # Phase 1: Routes search to external CDS for aggregation
+  # Phase 2+: Routes other requests directly to BPP (bypasses CDS)
+  # Uses bpp_uri from context for dynamic routing in Phase 2+
+  - name: bapTxnCaller
+    path: /bap/caller/
     handler:
       type: std
-      role: bpp
-      subscriberId: ubc.kazam.energy
-      subscriberId: ubc.kazam.energy
+      role: bap
+      subscriberId: bap.ubc.kazam.energy
       httpClientConfig:
         maxIdleConns: 1000
         maxIdleConnsPerHost: 200
@@ -144,41 +136,27 @@ modules:
         #     retry_wait_min: 100ms
         #     retry_wait_max: 500ms
         # this is for the dedi registry
+        registry:
+          id: dediregistry
+          config:
+            url: http://api.testnet.beckn.one/dedi
+            registryName: subscribers.beckn.one
+            retry_max: 3
+            retry_wait_min: 100ms
+            retry_wait_max: 500ms
         # registry:
         #   id: dediregistry
         #   config:
-        #     url: http://api.testnet.beckn.one/dedi
+        #     url: https://api.beckn.one/registry/dedi
         #     registryName: subscribers.beckn.one
         #     retry_max: 3
         #     retry_wait_min: 100ms
         #     retry_wait_max: 500ms
-        registry:
-          id: dediregistry
-          config:
-            url: https://api.beckn.one/registry/dedi
-            registryName: subscribers.beckn.one
-            retry_max: 3
-            retry_wait_min: 100ms
-            retry_wait_max: 500ms
-        registry:
-          id: dediregistry
-          config:
-            url: https://api.beckn.one/registry/dedi
-            registryName: subscribers.beckn.one
-            retry_max: 3
-            retry_wait_min: 100ms
-            retry_wait_max: 500ms
         keyManager:
           id: simplekeymanager
           config:
-            networkParticipant: ubc.kazam.energy
-            keyId: 76EU7bPss2QKJqvjmSBL5KMSb4eQq1RyJDdvLXpYkxGUgo3nAHM3cx
-            signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
-            signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
-            encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
-            encrPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
-            networkParticipant: ubc.kazam.energy
-            keyId: 76EU7bPss2QKJqvjmSBL5KMSb4eQq1RyJDdvLXpYkxGUgo3nAHM3cx
+            networkParticipant: bap.ubc.kazam.energy
+            keyId: 76EU7QxoJ7SabVuW2curNS4odKuv3981AiJhmpzMoqLhEeGfMDsiTM
             signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
             signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
             encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
@@ -186,7 +164,7 @@ modules:
         cache:
           id: cache
           config:
-            addr: redis-onix-bpp:6379
+            addr: redis-onix-bap-uat:6379
         schemaValidator:
           id: schemav2validator
           config:
@@ -194,14 +172,14 @@ modules:
             location: https://raw.githubusercontent.com/beckn/protocol-specifications-v2/refs/heads/core-v2.0.0-rc/api/beckn.yaml
             cacheTTL: "3600"
             extendedSchema_enabled: "true"
-            extendedSchema_cacheTTL: "3600"
+            extendedSchema_cacheTTL: "86400"
             extendedSchema_maxCacheSize: "100"
             extendedSchema_downloadTimeout: "30"
             extendedSchema_allowedDomains: "beckn.org,example.com,raw.githubusercontent.com"
         router:
           id: router
           config:
-            routingConfig: /app/config/bpp_caller_routing.yaml
+            routingConfig: /app/config/bap_caller_routing.yaml
         signer:
           id: signer
         middleware:
@@ -209,7 +187,7 @@ modules:
             config:
               # contextKeys: transaction_id,message_id,parent_id
               contextKeys: transaction_id,message_id
-              role: bpp
+              role: bap
       steps:
         - validateSchema
         - addRoute

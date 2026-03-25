@@ -9,7 +9,7 @@ log:
     - message_id
     - subscriber_id
     - module_id
-    # - parent_id
+  #  - parent_id
 
 http:
   port: 8001
@@ -63,7 +63,7 @@ modules:
         #     retry_max: 3
         #     retry_wait_min: 100ms
         #     retry_wait_max: 500ms
-        # this is for the dedi registry
+         # this is for the dedi registry     
         # registry:
         #   id: dediregistry
         #   config:
@@ -72,6 +72,14 @@ modules:
         #     retry_max: 3
         #     retry_wait_min: 100ms
         #     retry_wait_max: 500ms
+        registry:
+          id: dediregistry
+          config:
+            url: https://api.beckn.one/registry/dedi
+            registryName: subscribers.beckn.one
+            retry_max: 3
+            retry_wait_min: 100ms
+            retry_wait_max: 500ms
         registry:
           id: dediregistry
           config:
@@ -131,6 +139,7 @@ modules:
       type: std
       role: bap
       subscriberId: bap.ubc.kazam.energy
+      subscriberId: bap.ubc.kazam.energy
       httpClientConfig:
         maxIdleConns: 1000
         maxIdleConnsPerHost: 200
@@ -144,7 +153,7 @@ modules:
         #     retry_max: 3
         #     retry_wait_min: 100ms
         #     retry_wait_max: 500ms
-        # this is for the dedi registry
+        # this is for the dedi registry     
         # registry:
         #   id: dediregistry
         #   config:
@@ -161,9 +170,23 @@ modules:
             retry_max: 3
             retry_wait_min: 100ms
             retry_wait_max: 500ms
+        registry:
+          id: dediregistry
+          config:
+            url: https://api.beckn.one/registry/dedi
+            registryName: subscribers.beckn.one
+            retry_max: 3
+            retry_wait_min: 100ms
+            retry_wait_max: 500ms
         keyManager:
           id: simplekeymanager
           config:
+            networkParticipant: bap.ubc.kazam.energy
+            keyId: 76EU8TzcBV7L43CRoMWZ6JRMhVcBACZm7X9d5U134ejdTvLXhgV2KT
+            signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
+            signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
+            encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
+            encrPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
             networkParticipant: bap.ubc.kazam.energy
             keyId: 76EU8TzcBV7L43CRoMWZ6JRMhVcBACZm7X9d5U134ejdTvLXhgV2KT
             signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
