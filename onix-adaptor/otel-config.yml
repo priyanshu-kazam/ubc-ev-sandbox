@@ -66,12 +66,18 @@ exporters:
 
   # Network-level: forward to second collector (Loki, Zipkin, Prometheus for local display)
   otlp_http/collector2:
-    endpoint: http://otel-collector-network:4318
+    endpoint: https://obs.prod.ubc.nbsl.org.in
     compression: gzip
 
 
 
 extensions:
+  oauth2client:
+    token_url: https://obs-auth.prod.ubc.nbsl.org.in/oauth2/token
+    client_id: otel-collector-kzm
+    client_secret: E8A023AE-19DF-4765-99D8-3033D204DD6B
+    endpoint_params:
+      audience: otel-collector-network
   health_check:
     endpoint: 0.0.0.0:13133
   zpages:

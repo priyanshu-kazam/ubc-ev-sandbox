@@ -9,8 +9,7 @@ log:
     - message_id
     - subscriber_id
     - module_id
-    - parent_id
- 
+    # - parent_id
 
 http:
   port: 8001
@@ -50,21 +49,21 @@ modules:
     handler:
       type: std
       role: bap
-      subscriberId: ev-charging.sandbox1.com
+      subscriberId: bap.ubc.kazam.energy
       httpClientConfig:
         maxIdleConns: 1000
         maxIdleConnsPerHost: 200
         idleConnTimeout: 300s
         responseHeaderTimeout: 5s
       plugins:
-        registry:
-          id: registry
-          config:
-            url: http://mock-registry:3030
-            retry_max: 3
-            retry_wait_min: 100ms
-            retry_wait_max: 500ms
-         # this is for the dedi registry     
+        # registry:
+        #   id: registry
+        #   config:
+        #     url: http://mock-registry:3030
+        #     retry_max: 3
+        #     retry_wait_min: 100ms
+        #     retry_wait_max: 500ms
+        # this is for the dedi registry
         # registry:
         #   id: dediregistry
         #   config:
@@ -73,15 +72,23 @@ modules:
         #     retry_max: 3
         #     retry_wait_min: 100ms
         #     retry_wait_max: 500ms
+        registry:
+          id: dediregistry
+          config:
+            url: https://api.beckn.one/registry/dedi
+            registryName: subscribers.beckn.one
+            retry_max: 3
+            retry_wait_min: 100ms
+            retry_wait_max: 500ms
         keyManager:
           id: simplekeymanager
           config:
-            networkParticipant: ev-charging.sandbox1.com
-            keyId: bap-key-1
-            signingPrivateKey: kaOxmZvVK0IdfMa+OtKZShKo9KVk4QLgCMn+Ch4QpU4=
-            signingPublicKey: ehNGIiQxbhAJGS9U7YZN5nsUNiLDlaSUQWlWbWc4SO4=
-            encrPrivateKey: kaOxmZvVK0IdfMa+OtKZShKo9KVk4QLgCMn+Ch4QpU4=
-            encrPublicKey: ehNGIiQxbhAJGS9U7YZN5nsUNiLDlaSUQWlWbWc4SO4=
+            networkParticipant: bap.ubc.kazam.energy
+            keyId: 76EU8TzcBV7L43CRoMWZ6JRMhVcBACZm7X9d5U134ejdTvLXhgV2KT
+            signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
+            signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
+            encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
+            encrPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
         cache:
           id: cache
           config:
@@ -106,8 +113,8 @@ modules:
         middleware:
           - id: reqpreprocessor
             config:
-              contextKeys: transaction_id,message_id,parent_id
-
+              # contextKeys: transaction_id,message_id,parent_id
+              contextKeys: transaction_id,message_id
               role: bap
       steps:
         - validateSign
@@ -123,21 +130,21 @@ modules:
     handler:
       type: std
       role: bap
-      subscriberId: ev-charging.sandbox1.com
+      subscriberId: bap.ubc.kazam.energy
       httpClientConfig:
         maxIdleConns: 1000
         maxIdleConnsPerHost: 200
         idleConnTimeout: 300s
         responseHeaderTimeout: 5s
       plugins:
-        registry:
-          id: registry
-          config:
-            url: http://mock-registry:3030
-            retry_max: 3
-            retry_wait_min: 100ms
-            retry_wait_max: 500ms
-        # this is for the dedi registry     
+        # registry:
+        #   id: registry
+        #   config:
+        #     url: http://mock-registry:3030
+        #     retry_max: 3
+        #     retry_wait_min: 100ms
+        #     retry_wait_max: 500ms
+        # this is for the dedi registry
         # registry:
         #   id: dediregistry
         #   config:
@@ -146,15 +153,23 @@ modules:
         #     retry_max: 3
         #     retry_wait_min: 100ms
         #     retry_wait_max: 500ms
+        registry:
+          id: dediregistry
+          config:
+            url: https://api.beckn.one/registry/dedi
+            registryName: subscribers.beckn.one
+            retry_max: 3
+            retry_wait_min: 100ms
+            retry_wait_max: 500ms
         keyManager:
           id: simplekeymanager
           config:
-            networkParticipant: ev-charging.sandbox1.com
-            keyId: bap-key-1
-            signingPrivateKey: kaOxmZvVK0IdfMa+OtKZShKo9KVk4QLgCMn+Ch4QpU4=
-            signingPublicKey: ehNGIiQxbhAJGS9U7YZN5nsUNiLDlaSUQWlWbWc4SO4=
-            encrPrivateKey: kaOxmZvVK0IdfMa+OtKZShKo9KVk4QLgCMn+Ch4QpU4=
-            encrPublicKey: ehNGIiQxbhAJGS9U7YZN5nsUNiLDlaSUQWlWbWc4SO4=
+            networkParticipant: bap.ubc.kazam.energy
+            keyId: 76EU8TzcBV7L43CRoMWZ6JRMhVcBACZm7X9d5U134ejdTvLXhgV2KT
+            signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
+            signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
+            encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
+            encrPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
         cache:
           id: cache
           config:
@@ -179,10 +194,10 @@ modules:
         middleware:
           - id: reqpreprocessor
             config:
-              contextKeys: transaction_id,message_id,parent_id
+              # contextKeys: transaction_id,message_id,parent_id
+              contextKeys: transaction_id,message_id
               role: bap
       steps:
         - validateSchema
         - addRoute
         - sign
-
