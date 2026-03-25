@@ -16,19 +16,35 @@ services:
       retries: 5
     restart: unless-stopped
 
-  redis-onix-bap-uat:
-    image: redis:alpine
-    container_name: redis-onix-bap-uat
+  # redis-onix-bap-uat:
+  #   image: redis:alpine
+  #   container_name: redis-onix-bap-uat
+  #   ports:
+  #     - "7379:6379"
+  #   command: redis-server --requirepass your-redis-password
+  #   networks:
+  #     - onix-network
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "-a", "your-redis-password", "ping"]
+  #     interval: 5s
+  #     timeout: 3s
+  #     retries: 5
+  #   restart: unless-stopped
+
+  # OTEL Collector for BAP - receives OTLP from onix-bap-plugin
+  otel-collector-bap:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector-bap
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./otel-config.yml:/etc/otelcol/config.yaml:ro
     ports:
-      - "7379:6379"
-    command: redis-server --requirepass your-redis-password
+      - "4317:4317"
+      - "4318:4318"
+      - "13133:13133"
+      - "55679:55679"
     networks:
       - onix-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "your-redis-password", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
     restart: unless-stopped
 
   onix-bap-plugin:
@@ -56,44 +72,27 @@ services:
     networks:
       - onix-network
 
-  # OTEL Collector for BAP - receives OTLP from onix-bap-plugin
-  otel-collector-bap:
-    image: otel/opentelemetry-collector-contrib:latest
-    container_name: otel-collector-bap
-    command: ["--config=/etc/otelcol/config.yaml"]
-    volumes:
-      - ./otel-config.yml:/etc/otelcol/config.yaml:ro
-    ports:
-      - "4317:4317"
-      - "4318:4318"
-      - "13133:13133"
-      - "55679:55679"
-    networks:
-      - onix-network
-    restart: unless-stopped
-
-  onix-bap-plugin-uat:
-    # Use pre-built image from Docker Hub
-    image: manendrapalsingh/onix-adapter:v0.9.3
-    container_name: onix-bap-plugin-uat
-    ports:
-      - "9001:9001"
-    volumes:
-      # Mount config directory (writable for symlink creation, but original files won't be modified)
-      - ${CONFIG_PATH:-./config-uat}/onix-bap:/app/config
-      # Mount schema directory (read-only)
-      - ../schemas:/app/schemas:ro
-    environment:
-      - CONFIG_FILE=/app/config/adapter.yaml
-      - REDIS_PASSWORD=your-redis-password
-    restart: unless-stopped
-    depends_on:
-      redis-onix-bap-uat:
-        condition: service_healthy
-    networks:
-      - onix-network
+  # onix-bap-plugin-uat:
+  #   # Use pre-built image from Docker Hub
+  #   image: manendrapalsingh/onix-adapter:v0.9.3
+  #   container_name: onix-bap-plugin-uat
+  #   ports:
+  #     - "9001:9001"
+  #   volumes:
+  #     # Mount config directory (writable for symlink creation, but original files won't be modified)
+  #     - ${CONFIG_PATH:-./config-uat}/onix-bap:/app/config
+  #     # Mount schema directory (read-only)
+  #     - ../schemas:/app/schemas:ro
+  #   environment:
+  #     - CONFIG_FILE=/app/config/adapter.yaml
+  #     - REDIS_PASSWORD=your-redis-password
+  #   restart: unless-stopped
+  #   depends_on:
+  #     redis-onix-bap-uat:
+  #       condition: service_healthy
+  #   networks:
+  #     - onix-network
 
 networks:
   onix-network:
     driver: bridge
-
