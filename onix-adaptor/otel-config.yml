@@ -64,10 +64,16 @@ exporters:
   #     insecure: true
 
   # Network-level: forward to second collector (Loki, Zipkin, Prometheus for local display)
-  otlp_http/collector2:
+  otlp_http/collector2_kazam:
     endpoint: https://obs.prod.ubc.nbsl.org.in
     auth:
-      authenticator: oauth2client
+      authenticator: oauth2client/kazam
+    compression: gzip
+
+  otlp_http/collector2_hpcl:
+    endpoint: https://obs.prod.ubc.nbsl.org.in
+    auth:
+      authenticator: oauth2client/hpcl
     compression: gzip
 
 extensions:
@@ -101,7 +107,7 @@ service:
     metrics/network:
       receivers: [otlp]
       processors: [filter/network_metrics, batch]
-      exporters: [otlp_http/collector2]
+      exporters: [otlp_http/collector2_kazam, otlp_http/collector2_hpcl]
 
     # App-level: ALL traces -> transform Beckn IDs -> Jaeger (stays local on the node)
     # traces/app:
@@ -113,13 +119,13 @@ service:
     traces/network:
       receivers: [otlp]
       processors: [filter/network_traces, transform/beckn_ids, batch]
-      exporters: [otlp_http/collector2]
+      exporters: [otlp_http/collector2_kazam, otlp_http/collector2_hpcl]
 
     # Network-level: ALL audit logs -> Collector 2
     logs/network:
       receivers: [otlp]
       processors: [filter/network_logs, batch]
-      exporters: [otlp_http/collector2]
+      exporters: [otlp_http/collector2_kazam, otlp_http/collector2_hpcl]
 
   telemetry:
     logs:
