@@ -50,7 +50,7 @@ services:
   onix-bpp-plugin-kazam:
     # Use pre-built image from Docker Hub
     image: manendrapalsingh/onix-adapter:v0.9.5
-    container_name: onix-bpp-plugin
+    container_name: onix-bpp-plugin-kazam
     ports:
       - "8002:8002"
     volumes:
@@ -75,7 +75,7 @@ services:
   onix-bpp-plugin-hpcl:
     # Use pre-built image from Docker Hub
     image: manendrapalsingh/onix-adapter:v0.9.5
-    container_name: onix-bpp-plugin
+    container_name: onix-bpp-plugin-hpcl
     ports:
       - "8002:8002"
     volumes:
