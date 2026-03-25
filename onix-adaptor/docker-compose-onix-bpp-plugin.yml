@@ -15,6 +15,21 @@ services:
       timeout: 3s
       retries: 5
     restart: unless-stopped
+  
+  redis-onix-bpp-uat:
+    image: redis:alpine
+    container_name: redis-onix-bpp-uat
+    ports:
+      - "7380:6379"
+    command: redis-server --requirepass your-redis-password
+    networks:
+      - onix-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "your-redis-password", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
 
   onix-bpp-plugin:
     # Use pre-built image from Docker Hub
@@ -56,6 +71,29 @@ services:
     networks:
       - onix-network
     restart: unless-stopped
+
+  onix-bpp-plugin-uat:
+    # Use pre-built image from Docker Hub
+    image: manendrapalsingh/onix-adapter:v0.9.3
+    container_name: onix-bpp-plugin-uat
+    ports:
+      - "9002:9002"
+    volumes:
+      # Mount config directory (writable for symlink creation, but original files won't be modified)
+      - ${CONFIG_PATH:-./config-uat}/onix-bpp:/app/config
+      # Mount schema directory (read-only)
+      - ../schemas:/app/schemas:ro
+    environment:
+      - CONFIG_FILE=/app/config/adapter.yaml
+      - REDIS_PASSWORD=your-redis-password
+      - OTEL_EXPORTER_OTLP_INSECURE=true
+      - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector-bpp:4317
+    restart: unless-stopped
+    depends_on:
+      redis-onix-bpp:
+        condition: service_healthy
+    networks:
+      - onix-network
 
 networks:
   onix-network:

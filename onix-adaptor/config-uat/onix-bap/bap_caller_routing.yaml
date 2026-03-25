@@ -11,7 +11,7 @@ routingRules:
     version: "2.0.0"
     targetType: url
     target:
-      url: https://cds.prod.ubc.nbsl.org.in/cds/discover
+      url: https://unstuffed-terminational-burt.ngrok-free.dev/beckn
       excludeAction: false
     endpoints:
       - discover
