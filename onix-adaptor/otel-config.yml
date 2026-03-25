@@ -14,7 +14,6 @@ processors:
     send_batch_size: 1024
     timeout: 10s
 
-
   # Network-level filter: only forward Beckn spec metrics to the receiver.
   # Drops internal app metrics (onix_step_*, onix_plugin_*, beckn_*, runtime.*).
   # OTTL: drop any metric whose name is NOT onix_http_request_count.
@@ -67,9 +66,9 @@ exporters:
   # Network-level: forward to second collector (Loki, Zipkin, Prometheus for local display)
   otlp_http/collector2:
     endpoint: https://obs.prod.ubc.nbsl.org.in
+    auth:
+      authenticator: oauth2client
     compression: gzip
-
-
 
 extensions:
   oauth2client:
