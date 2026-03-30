@@ -83,7 +83,7 @@ modules:
           id: simplekeymanager
           config:
             networkParticipant: hpcl.ubc.kazam.energy
-            keyId: 76EU7RPHz1SxcVFzUqV3jvbAxwyGbP6aKnbfk5NTwNi3jyweAyHiGf
+            keyId: 76EU8DJDRX5R5BkHcUTwQmdMwVTkm9Vu5yRFF1CCoF6XXVXbtQoATi
             signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
             signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
             encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
@@ -171,7 +171,7 @@ modules:
           id: simplekeymanager
           config:
             networkParticipant: hpcl.ubc.kazam.energy
-            keyId: 76EU7RPHz1SxcVFzUqV3jvbAxwyGbP6aKnbfk5NTwNi3jyweAyHiGf
+            keyId: 76EU8DJDRX5R5BkHcUTwQmdMwVTkm9Vu5yRFF1CCoF6XXVXbtQoATi
             signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
             signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
             encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
