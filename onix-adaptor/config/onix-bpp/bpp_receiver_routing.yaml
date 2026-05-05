@@ -28,6 +28,8 @@ routingRules:
 
   # Phase 2+: Other requests from BAP-ONIX Caller (HTTP) -> routes to mock-bpp via HTTP
   # Requests come directly from BAP-ONIX (bypasses CDS)
+  #       url: https://backend.ubc.kazam.energy/beckn
+
   - domain: beckn.one:deg:ev-charging
     version: "2.0.0"
     targetType: url
