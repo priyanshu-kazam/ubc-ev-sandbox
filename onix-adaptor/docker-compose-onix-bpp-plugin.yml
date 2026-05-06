@@ -97,6 +97,31 @@ services:
     networks:
       - onix-network
 
+  onix-bpp-plugin-bpcl:
+    # Use pre-built image from Docker Hub
+    image: manendrapalsingh/onix-adapter:v0.9.5
+    container_name: onix-bpp-plugin-bpcl
+    ports:
+      - "8004:8002"
+    volumes:
+      # Mount config directory (writable for symlink creation, but original files won't be modified)
+      - ${CONFIG_PATH:-./config}/onix-bpp-bpcl:/app/config
+      # Mount schema directory (read-only)
+      - ../schemas:/app/schemas:ro
+    environment:
+      - CONFIG_FILE=/app/config/adapter.yaml
+      - REDIS_PASSWORD=your-redis-password
+      - OTEL_EXPORTER_OTLP_INSECURE=true
+      - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector-bpp:4317
+    restart: unless-stopped
+    depends_on:
+      redis-onix-bpp:
+        condition: service_healthy
+      otel-collector-bpp:
+        condition: service_started
+    networks:
+      - onix-network
+
   # onix-bpp-plugin-uat:
   #   # Use pre-built image from Docker Hub
   #   image: manendrapalsingh/onix-adapter:v0.9.3
