@@ -102,7 +102,7 @@ services:
     image: manendrapalsingh/onix-adapter:v0.9.5
     container_name: onix-bpp-plugin-bpcl
     ports:
-      - "8004:8002"
+      - "8006:8002"
     volumes:
       # Mount config directory (writable for symlink creation, but original files won't be modified)
       - ${CONFIG_PATH:-./config}/onix-bpp-bpcl:/app/config
