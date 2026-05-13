@@ -159,14 +159,14 @@ modules:
             retry_max: 3
             retry_wait_min: 100ms
             retry_wait_max: 500ms
-        registry:
-          id: dediregistry
-          config:
-            url: https://api.beckn.one/registry/dedi
-            registryName: subscribers.beckn.one
-            retry_max: 3
-            retry_wait_min: 100ms
-            retry_wait_max: 500ms
+        #registry:
+        #  id: dediregistry
+        #  config:
+        #    url: https://api.beckn.one/registry/dedi
+        #    registryName: subscribers.beckn.one
+        #    retry_max: 3
+        #    retry_wait_min: 100ms
+        #    retry_wait_max: 500ms
         keyManager:
           id: simplekeymanager
           config:

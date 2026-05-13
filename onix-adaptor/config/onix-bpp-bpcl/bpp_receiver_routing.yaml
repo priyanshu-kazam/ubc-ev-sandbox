@@ -11,9 +11,10 @@ routingRules:
     version: "2.0.0"
     targetType: url
     target:
-      url: https://backend.ubc.kazam.energy/beckn
+      # url: https://backend.ubc.kazam.energy/beckn
       # url: https://unstuffed-terminational-burt.ngrok-free.dev/beckn
-
+      url: https://kazam-ubc-backend-ocpi.onrender.com/beckn
+      # url: http://usable-polecat-promoted.ngrok-free.app/beckn
       excludeAction: false
     endpoints:
       - discover
@@ -22,8 +23,10 @@ routingRules:
     version: "2.0.0"
     targetType: url
     target:
-      url: https://backend.ubc.kazam.energy/beckn
+      # url: https://backend.ubc.kazam.energy/beckn
       # url: https://unstuffed-terminational-burt.ngrok-free.dev/beckn
+      url: https://kazam-ubc-backend-ocpi.onrender.com/beckn
+      # url: http://usable-polecat-promoted.ngrok-free.app/beckn
       excludeAction: false
     endpoints:
       - on_publish
@@ -35,8 +38,10 @@ routingRules:
     version: "2.0.0"
     targetType: url
     target:
-      url: https://backend.ubc.kazam.energy/beckn
+      # url: https://backend.ubc.kazam.energy/beckn
       # url: https://unstuffed-terminational-burt.ngrok-free.dev/beckn
+      url: https://kazam-ubc-backend-ocpi.onrender.com/beckn
+      # url: http://usable-polecat-promoted.ngrok-free.app/beckn
       excludeAction: false
     endpoints:
       - select
