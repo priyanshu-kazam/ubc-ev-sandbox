@@ -74,7 +74,7 @@ modules:
         registry:
           id: dediregistry
           config:
-            url: https://api.beckn.one/registry/dedi
+            url: http://api.testnet.beckn.one/dedi
             registryName: subscribers.beckn.one
             retry_max: 3
             retry_wait_min: 100ms
@@ -83,7 +83,11 @@ modules:
           id: simplekeymanager
           config:
             networkParticipant: bpcl.ubc.kazam.energy
-            keyId: 76EU7eNzqzVBDwhQgB7695MaGF6QQ5STbh3ZTnDAGyctLRgkWir6Sh
+            # PROD
+            # keyId: 76EU7eNzqzVBDwhQgB7695MaGF6QQ5STbh3ZTnDAGyctLRgkWir6Sh
+
+            # UAT
+            keyId: 76EU8ZiG611SfT9rJteZduHWqM8PcUv5untgxpGUYXncjcJAHfZmL6
             signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
             signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
             encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
@@ -154,7 +158,7 @@ modules:
         registry:
           id: dediregistry
           config:
-            url: https://api.beckn.one/registry/dedi
+            url: http://api.testnet.beckn.one/dedi
             registryName: subscribers.beckn.one
             retry_max: 3
             retry_wait_min: 100ms
@@ -171,7 +175,11 @@ modules:
           id: simplekeymanager
           config:
             networkParticipant: bpcl.ubc.kazam.energy
-            keyId: 76EU7eNzqzVBDwhQgB7695MaGF6QQ5STbh3ZTnDAGyctLRgkWir6Sh
+            # PROD
+            # keyId: 76EU7eNzqzVBDwhQgB7695MaGF6QQ5STbh3ZTnDAGyctLRgkWir6Sh
+
+            # UAT
+            keyId: 76EU8ZiG611SfT9rJteZduHWqM8PcUv5untgxpGUYXncjcJAHfZmL6
             signingPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=
             signingPublicKey: q/cbRzpmMOAAvAM2zDcFl5AQlWmsZzoljzAfY2oSuMA=
             encrPrivateKey: 54LR9tUyuxU7sUScPtx9NdZFNDWGpCN0W4ij1wRwq5k=

@@ -9,7 +9,11 @@ routingRules:
     version: "2.0.0"
     targetType: url
     target:
-      url: https://cds.prod.ubc.nbsl.org.in/cds/discover
+      # PROD
+      # url: https://cds.prod.ubc.nbsl.org.in/cds/discover
+
+      # UAT
+      url: https://uat.cds.nbsl.org.in/cds/discover
       excludeAction: false
     endpoints:
       - on_discover
@@ -18,7 +22,11 @@ routingRules:
     version: "2.0.0"
     targetType: url
     target:
-      url: https://cds.prod.ubc.nbsl.org.in/cds/catalog_publish
+      # PROD
+      # url: https://cds.prod.ubc.nbsl.org.in/cds/catalog_publish
+
+      # UAT
+      url: https://uat.cds.nbsl.org.in/cds/catalog_publish
       excludeAction: true
     endpoints:
       - publish
@@ -40,4 +48,3 @@ routingRules:
       - on_update
       - on_rating
       - on_support
-
